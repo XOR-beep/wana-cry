@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WARNING: SYSTEM COMPROMISED</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .flashing {
+            animation: flash 1s infinite;
+        }
+        .shaking {
+            animation: shake 0.5s infinite;
+        }
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 0, 0, 0.1) 0%,
+                rgba(255, 0, 0, 0) 10%
+            );
+            background-size: 100% 8px;
+            pointer-events: none;
+        }
+        .glitch {
+            position: relative;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff0000;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00ff00;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            10% { clip: rect(112px, 9999px, 76px, 0); }
+            20% { clip: rect(85px, 9999px, 77px, 0); }
+            30% { clip: rect(27px, 9999px, 97px, 0); }
+            40% { clip: rect(64px, 9999px, 98px, 0); }
+            50% { clip: rect(61px, 9999px, 85px, 0); }
+            60% { clip: rect(99px, 9999px, 114px, 0); }
+            70% { clip: rect(34px, 9999px, 115px, 0); }
+            80% { clip: rect(98px, 9999px, 129px, 0); }
+            90% { clip: rect(43px, 9999px, 96px, 0); }
+            100% { clip: rect(82px, 9999px, 64px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 119px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            20% { clip: rect(75px, 9999px, 99px, 0); }
+            30% { clip: rect(58px, 9999px, 93px, 0); }
+            40% { clip: rect(108px, 9999px, 111px, 0); }
+            50% { clip: rect(111px, 9999px, 16px, 0); }
+            60% { clip: rect(115px, 9999px, 65px, 0); }
+            70% { clip: rect(32px, 9999px, 52px, 0); }
+            80% { clip: rect(117px, 9999px, 33px, 0); }
+            90% { clip: rect(15px, 9999px, 37px, 0); }
+            100% { clip: rect(95px, 9999px, 53px, 0); }
+        }
+        .progress-bar {
+            position: relative;
+            height: 20px;
+            background-color: #111;
+            border: 1px solid #ff0000;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ff4500);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .file-item {
+            transition: all 0.3s ease;
+        }
+        .file-item.encrypted {
+            color: #ff0000;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body class="bg-black text-red-500 font-mono overflow-hidden h-screen flex flex-col">
+    <div class="scanline"></div>
+    
+    <div class="container mx-auto px-4 py-8 flex-1 flex flex-col">
+        <!-- Header with flashing warning -->
+        <div class="text-center mb-8">
+            <div class="glitch text-4xl md:text-6xl font-bold mb-4 flashing" data-text="WARNING: SYSTEM COMPROMISED">
+                WARNING: SYSTEM COMPROMISED
+            </div>
+            <div class="text-xl md:text-2xl shaking">
+                <i class="fas fa-skull-crossbones mr-2"></i> WannaCry Ransomware Detected <i class="fas fa-skull-crossbones ml-2"></i>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Left column - Ransom note -->
+            <div class="border border-red-500 p-6 bg-black bg-opacity-70">
+                <div class="text-2xl font-bold mb-4 text-center">
+                    <i class="fas fa-lock mr-2"></i> YOUR FILES HAVE BEEN ENCRYPTED!
+                </div>
+                <div class="mb-6">
+                    <p class="mb-4">All your important documents, photos, databases and other files have been encrypted with military-grade AES-256 encryption.</p>
+                    <p class="mb-4">To recover your files, you must pay <span class="font-bold">0.5 BTC</span> to the Bitcoin address shown below.</p>
+                    <p class="mb-4">If payment is not made within <span id="countdown" class="font-bold">24:00:00</span>, your files will be permanently destroyed.</p>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="font-bold mb-2">Bitcoin Address:</div>
+                    <div class="bg-gray-900 p-3 text-center font-mono text-sm md:text-base overflow-x-auto">
+                        1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <div class="font-bold mb-2">Your Unique ID:</div>
+                    <div class="bg-gray-900 p-3 text-center font-mono text-sm md:text-base">
+                        WNCRY-<span id="unique-id">XXXX-XXXX-XXXX</span>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button id="decrypt-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-none border border-white">
+                        <i class="fas fa-key mr-2"></i> DECRYPT FILES
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right column - File encryption status -->
+            <div class="border border-red-500 p-6 bg-black bg-opacity-70">
+                <div class="text-2xl font-bold mb-4 text-center">
+                    <i class="fas fa-file-alt mr-2"></i> FILE ENCRYPTION STATUS
+                </div>
+                
+                <div class="mb-6">
+                    <div class="flex justify-between mb-2">
+                        <span>Encryption Progress:</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="font-bold mb-2">Files Encrypted:</div>
+                    <div id="file-list" class="max-h-64 overflow-y-auto">
+                        <!-- Files will be added here by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="text-sm text-gray-500">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Do not attempt to recover files yourself - this may cause permanent data loss.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mt-8 text-center text-sm">
+            <div class="mb-2">
+                <span class="mr-4"><i class="fas fa-globe mr-1"></i> IP: 192.168.1.1</span>
+                <span class="mr-4"><i class="fas fa-desktop mr-1"></i> Host: YOUR-COMPUTER</span>
+                <span><i class="fas fa-user mr-1"></i> User: ADMIN</span>
+            </div>
+            <div class="text-gray-600">
+                WannaCry v2.0 - Shadow Brokers Edition | NSA Exploits Used: ETERNALBLUE, DOUBLEPULSAR
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prevent all escape methods
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+W, Alt+F4
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'J') || 
+                (e.ctrlKey && e.key === 'U') ||
+                (e.ctrlKey && e.key === 'W') ||
+                (e.altKey && e.key === 'F4')) {
+                e.preventDefault();
+                alert("ACCESS DENIED! Your files will be PERMANENTLY DELETED if you attempt to close this page!");
+            }
+        });
+
+        // Make fullscreen and trap user
+        function trapUser() {
+            document.documentElement.requestFullscreen().catch(e => {});
+            alert("YOUR FILES ARE BEING ENCRYPTED!\nDO NOT CLOSE THIS WINDOW OR YOUR FILES WILL BE LOST FOREVER!");
+        }
+        window.onload = trapUser;
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                trapUser();
+            }
+        });
+
+        // Generate random unique ID
+        function generateUniqueId() {
+            const chars = '0123456789ABCDEF';
+            let result = '';
+            for (let i = 0; i < 12; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+                if (i === 3 || i === 7) result += '-';
+            }
+            return result;
+        }
+        
+        // Sample files to "encrypt"
+        const sampleFiles = [
+            "Documents/Resume.docx",
+            "Documents/Taxes_2022.xlsx",
+            "Pictures/Vacation.jpg",
+            "Pictures/Family.jpg",
+            "Music/MyPlaylist.mp3",
+            "Videos/Wedding.mp4",
+            "Desktop/Important_Project.zip",
+            "Downloads/Contract.pdf",
+            "Desktop/Passwords.txt",
+            "Documents/Financial_Records.xlsx",
+            "Pictures/Private/Secret.jpg",
+            "Backup/Database.bak",
+            "Work/Proposal.docx",
+            "Work/Presentation.pptx",
+            "Personal/Diary.txt"
+        ];
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set unique ID
+            document.getElementById('unique-id').textContent = generateUniqueId();
+            
+            // Initialize countdown timer (24 hours)
+            let hours = 24;
+            let minutes = 0;
+            let seconds = 0;
+            
+            const countdownElement = document.getElementById('countdown');
+            
+            const countdown = setInterval(function() {
+                seconds--;
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        if (hours < 0) {
+                            clearInterval(countdown);
+                            countdownElement.textContent = "00:00:00";
+                            document.getElementById('decrypt-btn').disabled = true;
+                            return;
+                        }
+                    }
+                }
+                
+                countdownElement.textContent = 
+                    (hours < 10 ? "0" + hours : hours) + ":" + 
+                    (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+                    (seconds < 10 ? "0" + seconds : seconds);
+            }, 1000);
+            
+            // Simulate file encryption
+            const fileListElement = document.getElementById('file-list');
+            const progressBar = document.getElementById('progress-bar-fill');
+            const progressPercent = document.getElementById('progress-percent');
+            
+            let encryptedCount = 0;
+            const totalFiles = sampleFiles.length;
+            
+            // Add files to the list
+            sampleFiles.forEach(file => {
+                const fileElement = document.createElement('div');
+                fileElement.className = 'file-item py-1 px-2 border-b border-gray-800';
+                fileElement.textContent = file;
+                fileListElement.appendChild(fileElement);
+            });
+            
+            // Encrypt files one by one
+            const encryptInterval = setInterval(function() {
+                if (encryptedCount >= totalFiles) {
+                    clearInterval(encryptInterval);
+                    return;
+                }
+                
+                const fileElements = fileListElement.querySelectorAll('.file-item:not(.encrypted)');
+                if (fileElements.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * fileElements.length);
+                    fileElements[randomIndex].classList.add('encrypted');
+                    encryptedCount++;
+                    
+                    // Update progress
+                    const percent = Math.floor((encryptedCount / totalFiles) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressPercent.textContent = percent + '%';
+                    
+                    // Scroll to bottom
+                    fileListElement.scrollTop = fileListElement.scrollHeight;
+                }
+            }, 200);
+            
+            // Decrypt button (does nothing)
+            document.getElementById('decrypt-btn').addEventListener('click', function() {
+                alert("PAYMENT REQUIRED!\n\nSend 0.5 BTC to:\n1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa\n\nYour files will remain encrypted until payment is received!");
+            });
+            
+            // Random glitch effect
+            setInterval(function() {
+                const elements = document.querySelectorAll('.glitch');
+                elements.forEach(el => {
+                    if (Math.random() > 0.7) {
+                        el.style.display = 'none';
+                        setTimeout(() => {
+                            el.style.display = 'block';
+                        }, 50);
+                    }
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
